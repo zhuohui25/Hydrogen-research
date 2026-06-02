@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@6.2.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@7.1.0"></script>
+</head>
+<body>
+  <div id="vis"/>
+  <script>
+    const spec = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+  "title": "China Carbon Price Projections by Different Organizations (2030–2060)",
+  "width": 700,
+  "height": 400,
+  "data": {
+    "values": [
+      {"year": 2030, "price": 15, "source": "Tsinghua"},
+      {"year": 2030, "price": 25, "source": "Refinitiv"},
+      {"year": 2030, "price": 21, "source": "Wuhan"},
+      {"year": 2030, "price": 50, "source": "IEA"},
+      {"year": 2030, "price": 16, "source": "CASS"},
+      {"year": 2035, "price": 26, "source": "Tsinghua"},
+      {"year": 2035, "price": 60, "source": "Refinitiv"},
+      {"year": 2035, "price": 53, "source": "IEA"},
+      {"year": 2035, "price": 42, "source": "CASS"},
+      {"year": 2040, "price": 42, "source": "Tsinghua"},
+      {"year": 2040, "price": 114, "source": "Refinitiv"},
+      {"year": 2040, "price": 51, "source": "Wuhan"},
+      {"year": 2040, "price": 56, "source": "CASS"},
+      {"year": 2050, "price": 109, "source": "Tsinghua"},
+      {"year": 2050, "price": 312, "source": "Refinitiv"},
+      {"year": 2050, "price": 135, "source": "Wuhan"},
+      {"year": 2050, "price": 168, "source": "CASS"},
+      {"year": 2060, "price": 396, "source": "Tsinghua"},
+      {"year": 2060, "price": 534, "source": "Refinitiv"},
+      {"year": 2060, "price": 334, "source": "Wuhan"},
+      {"year": 2060, "price": 452, "source": "CASS"}
+    ]
+  },
+  "transform": [
+    {
+      "joinaggregate": [
+        {"op": "min", "field": "price", "as": "min_price"},
+        {"op": "max", "field": "price", "as": "max_price"},
+        {"op": "mean", "field": "price", "as": "avg_price"}
+      ],
+      "groupby": ["year"]
+    }
+  ],
+  "layer": [
+    {
+      "mark": {"type": "area", "color": "#cfcfcf", "opacity": 0.35},
+      "encoding": {
+        "x": {"field": "year", "type": "ordinal", "title": "Year"},
+        "y": {
+          "field": "min_price",
+          "type": "quantitative",
+          "title": "Carbon Price (US$/tCO₂)"
+        },
+        "y2": {"field": "max_price"}
+      }
+    },
+    {
+      "mark": {"type": "line", "strokeWidth": 3, "color": "#003366"},
+      "encoding": {
+        "x": {"field": "year", "type": "ordinal"},
+        "y": {"field": "avg_price", "type": "quantitative"},
+        "tooltip": [
+          {"field": "year", "title": "Year"},
+          {"field": "avg_price", "title": "Average Price", "format": ".1f"}
+        ]
+      }
+    },
+    {
+      "mark": {"type": "point", "filled": true, "size": 120},
+      "encoding": {
+        "x": {"field": "year", "type": "ordinal"},
+        "y": {"field": "price", "type": "quantitative"},
+        "color": {
+          "field": "source",
+          "type": "nominal",
+          "legend": {"title": "Organization", "orient": "right"}
+        },
+        "tooltip": [
+          {"field": "source", "type": "nominal", "title": "Organization"},
+          {"field": "year", "type": "ordinal", "title": "Year"},
+          {
+            "field": "price",
+            "type": "quantitative",
+            "title": "Carbon Price",
+            "format": ".0f"
+          }
+        ]
+      }
+    }
+  ],
+  "config": {
+    "background": "#f4f4f4",
+    "arc": {"fill": "#6929c4"},
+    "area": {"fill": "#6929c4"},
+    "path": {"stroke": "#6929c4"},
+    "rect": {"fill": "#6929c4"},
+    "shape": {"stroke": "#6929c4"},
+    "symbol": {"stroke": "#6929c4"},
+    "circle": {"fill": "#6929c4"},
+    "view": {"fill": "#ffffff", "stroke": null},
+    "group": {"fill": "#ffffff"},
+    "title": {
+      "color": "#161616",
+      "anchor": "start",
+      "dy": -15,
+      "fontSize": 16,
+      "font": "IBM Plex Sans,system-ui,-apple-system,BlinkMacSystemFont,\".sfnstext-regular\",sans-serif",
+      "fontWeight": 600
+    },
+    "axis": {
+      "labelColor": "#525252",
+      "labelFontSize": 11,
+      "labelFont": "IBM Plex Sans Condensed, system-ui, -apple-system, BlinkMacSystemFont, \".SFNSText-Regular\", sans-serif",
+      "labelFontWeight": 400,
+      "titleColor": "#161616",
+      "titleFontWeight": 600,
+      "titleFontSize": 12,
+      "grid": true,
+      "gridColor": "#e0e0e0",
+      "labelAngle": 0
+    },
+    "axisX": {"titlePadding": 10},
+    "axisY": {"titlePadding": 2.5},
+    "style": {
+      "guide-label": {
+        "font": "IBM Plex Sans,system-ui,-apple-system,BlinkMacSystemFont,\".sfnstext-regular\",sans-serif",
+        "fill": "#525252",
+        "fontWeight": 400
+      },
+      "guide-title": {
+        "font": "IBM Plex Sans,system-ui,-apple-system,BlinkMacSystemFont,\".sfnstext-regular\",sans-serif",
+        "fill": "#525252",
+        "fontWeight": 400
+      }
+    },
+    "range": {
+      "category": [
+        "#6929c4",
+        "#1192e8",
+        "#005d5d",
+        "#9f1853",
+        "#fa4d56",
+        "#570408",
+        "#198038",
+        "#002d9c",
+        "#ee538b",
+        "#b28600",
+        "#009d9a",
+        "#012749",
+        "#8a3800",
+        "#a56eff"
+      ],
+      "diverging": [
+        "#750e13",
+        "#a2191f",
+        "#da1e28",
+        "#fa4d56",
+        "#ff8389",
+        "#ffb3b8",
+        "#ffd7d9",
+        "#fff1f1",
+        "#e5f6ff",
+        "#bae6ff",
+        "#82cfff",
+        "#33b1ff",
+        "#1192e8",
+        "#0072c3",
+        "#00539a",
+        "#003a6d"
+      ],
+      "heatmap": [
+        "#f6f2ff",
+        "#e8daff",
+        "#d4bbff",
+        "#be95ff",
+        "#a56eff",
+        "#8a3ffc",
+        "#6929c4",
+        "#491d8b",
+        "#31135e",
+        "#1c0f30"
+      ]
+    },
+    "legend": {"titleFontSize": 12, "labelFontSize": 11, "symbolSize": 100}
+  }
+};
+    vegaEmbed("#vis", spec, {mode: "vega-lite"}).then(console.log).catch(console.warn);
+  </script>
+</body>
+</html>
